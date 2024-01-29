@@ -29,7 +29,7 @@ let score = 0;
 let ghosts = [];
 let wallSpaceWidth = oneBlockSize / 1.6;
 let wallOffset = (oneBlockSize - wallSpaceWidth) / 2;
-let wallInnerColor = "black";
+let wallInnerColor = "pink";
 
 // we now create the map of the walls,
 // if 1 wall, if 0 not wall
@@ -162,7 +162,7 @@ let drawScore = () => {
 
 let draw = () => {
     canvasContext.clearRect(0, 0, canvas.width, canvas.height);
-    createRect(0, 0, canvas.width, canvas.height, "black");
+    createRect(0, 0, canvas.width, canvas.height, "white");
     drawWalls();
     drawFoods();
     drawGhosts();
