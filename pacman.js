@@ -1,3 +1,9 @@
+// First, ensure that the DOM content is fully loaded before initializing game elements
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize the Pacman class
+    const pacman = new Pacman(0, 0, 20, 20, 5); // Example initialization, adjust parameters as needed
+});
+
 class Pacman {
     constructor(x, y, width, height, speed) {
         this.x = x;
@@ -5,10 +11,15 @@ class Pacman {
         this.width = width;
         this.height = height;
         this.speed = speed;
-        this.direction = 4;
-        this.nextDirection = 4;
+        this.direction = 4; // Assuming 4 represents the right direction
+        this.nextDirection = 4; // Start with the same direction
         this.frameCount = 7;
         this.currentFrame = 1;
+
+        // Assuming pacmanFrames is the ID of your Pacman sprite image in the HTML
+        this.pacmanFrames = document.getElementById("animations");
+
+        // Regularly update the animation frame
         setInterval(() => {
             this.changeAnimation();
         }, 100);
@@ -22,7 +33,7 @@ class Pacman {
             return;
         }
     }
-
+    
     eat() {
         for (let i = 0; i < map.length; i++) {
             for (let j = 0; j < map[0].length; j++) {
@@ -37,7 +48,21 @@ class Pacman {
             }
         }
     }
+  
 
+    changeDirectionIfPossible() {
+        if (this.direction == this.nextDirection) return;
+        let tempDirection = this.direction;
+        this.direction = this.nextDirection;
+        this.moveForwards();
+        if (this.checkCollisions()) {
+            this.moveBackwards();
+            this.direction = tempDirection;
+        } else {
+            this.moveBackwards();
+        }
+    }
+  
     moveBackwards() {
         switch (this.direction) {
             case DIRECTION_RIGHT: // Right
@@ -71,7 +96,7 @@ class Pacman {
                 break;
         }
     }
-
+    
     checkCollisions() {
         let isCollided = false;
         if (
@@ -92,81 +117,48 @@ class Pacman {
         }
         return isCollided;
     }
-
+    
     checkGhostCollision(ghosts) {
-        for (let i = 0; i < ghosts.length; i++) {
-            let ghost = ghosts[i];
-            if (
-                ghost.getMapX() == this.getMapX() &&
-                ghost.getMapY() == this.getMapY()
-            ) {
+        for (let ghost of ghosts) {
+            if (/* condition to check collision between pacman and the ghost */) {
                 return true;
             }
         }
         return false;
     }
 
-    changeDirectionIfPossible() {
-        if (this.direction == this.nextDirection) return;
-        let tempDirection = this.direction;
-        this.direction = this.nextDirection;
-        this.moveForwards();
-        if (this.checkCollisions()) {
-            this.moveBackwards();
-            this.direction = tempDirection;
-        } else {
-            this.moveBackwards();
-        }
-    }
-
     getMapX() {
-        let mapX = parseInt(this.x / oneBlockSize);
-        return mapX;
+        return parseInt(this.x / 20); // Assuming 20 is the size of one block
     }
 
     getMapY() {
-        let mapY = parseInt(this.y / oneBlockSize);
-
-        return mapY;
-    }
-
-    getMapXRightSide() {
-        let mapX = parseInt((this.x * 0.99 + oneBlockSize) / oneBlockSize);
-        return mapX;
-    }
-
-    getMapYRightSide() {
-        let mapY = parseInt((this.y * 0.99 + oneBlockSize) / oneBlockSize);
-        return mapY;
+        return parseInt(this.y / 20); // Assuming 20 is the size of one block
     }
 
     changeAnimation() {
-        this.currentFrame =
-            this.currentFrame == this.frameCount ? 1 : this.currentFrame + 1;
+        this.currentFrame = (this.currentFrame % this.frameCount) + 1;
     }
 
-    draw() {
+    draw(canvasContext) {
+        // Ensure the context and image are available
+        if (!canvasContext || !this.pacmanFrames) return;
+
+        // Calculate the source x-coordinate based on the current frame
+        const sx = (this.currentFrame - 1) * this.width;
+
         canvasContext.save();
-        canvasContext.translate(
-            this.x + oneBlockSize / 2,
-            this.y + oneBlockSize / 2
-        );
-        canvasContext.rotate((this.direction * 90 * Math.PI) / 180);
-        canvasContext.translate(
-            -this.x - oneBlockSize / 2,
-            -this.y - oneBlockSize / 2
-        );
+        // Adjust the rotation based on Pacman's current direction
+        canvasContext.translate(this.x + this.width / 2, this.y + this.height / 2);
+        canvasContext.rotate((this.direction - 1) * Math.PI / 2); // Adjust rotation calculation as needed
+        canvasContext.translate(-this.width / 2, -this.height / 2);
+
+        // Draw the current frame of Pacman
         canvasContext.drawImage(
-            pacmanFrames,
-            (this.currentFrame - 1) * oneBlockSize,
-            0,
-            oneBlockSize,
-            oneBlockSize,
-            this.x,
-            this.y,
-            this.width,
-            this.height
+            this.pacmanFrames, // The image element
+            sx, 0, this.width, this.height, // Source rectangle
+            0, 0, this.width, this.height // Destination rectangle (relative to the translated/rotated context)
         );
+
         canvasContext.restore();
     }
 }
