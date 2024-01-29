@@ -132,7 +132,7 @@ let drawFoods = () => {
 
 let drawRemainingLives = () => {
     canvasContext.font = "20px Emulogic";
-    canvasContext.fillStyle = "white";
+    canvasContext.fillStyle = "black";
     canvasContext.fillText("Lives: ", 220, oneBlockSize * (map.length + 1));
 
     for (let i = 0; i < lives; i++) {
@@ -152,7 +152,7 @@ let drawRemainingLives = () => {
 
 let drawScore = () => {
     canvasContext.font = "20px Emulogic";
-    canvasContext.fillStyle = "white";
+    canvasContext.fillStyle = "black";
     canvasContext.fillText(
         "Score: " + score,
         0,
@@ -162,7 +162,7 @@ let drawScore = () => {
 
 let draw = () => {
     canvasContext.clearRect(0, 0, canvas.width, canvas.height);
-    createRect(0, 0, canvas.width, canvas.height, "white");
+    createRect(0, 0, canvas.width, canvas.height, "black");
     drawWalls();
     drawFoods();
     drawGhosts();
