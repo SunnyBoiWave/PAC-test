@@ -29,7 +29,7 @@ let score = 0;
 let ghosts = [];
 let wallSpaceWidth = oneBlockSize / 1.6;
 let wallOffset = (oneBlockSize - wallSpaceWidth) / 2;
-let wallInnerColor = "pink";
+let wallInnerColor = "black";
 
 // we now create the map of the walls,
 // if 1 wall, if 0 not wall
@@ -132,7 +132,7 @@ let drawFoods = () => {
 
 let drawRemainingLives = () => {
     canvasContext.font = "20px Emulogic";
-    canvasContext.fillStyle = "black";
+    canvasContext.fillStyle = "white";
     canvasContext.fillText("Lives: ", 220, oneBlockSize * (map.length + 1));
 
     for (let i = 0; i < lives; i++) {
@@ -152,7 +152,7 @@ let drawRemainingLives = () => {
 
 let drawScore = () => {
     canvasContext.font = "20px Emulogic";
-    canvasContext.fillStyle = "black";
+    canvasContext.fillStyle = "white";
     canvasContext.fillText(
         "Score: " + score,
         0,
